@@ -5,7 +5,7 @@ const path = require("path");
 const fs = require("fs");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // ✅ Ensure the uploads directory exists
 const UPLOADS_DIR = path.join(__dirname, "uploads");
@@ -65,5 +65,5 @@ app.get("/download/:fileId", (req, res) => {
 
 // ✅ Start the server
 app.listen(PORT, () => {
-    console.log(`🚀 Server started on http://localhost:${PORT}`);
+    console.log(`🚀 Server started on port ${PORT}`);
 });
