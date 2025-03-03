@@ -1,5 +1,5 @@
-// ✅ Change this Ngrok URL when restarting Ngrok
-const NGROK_URL = "https://ea8b-2405-201-c407-c0cf-e89e-ec2e-1fde-66c7.ngrok-free.app"; // Replace this!
+// Backend URL - change this to your deployed server URL
+const BACKEND_URL = "http://localhost:3000"; // Use localhost for development
 
 // DOM Elements
 let fileInput;
@@ -143,11 +143,13 @@ async function uploadFile() {
         simulateProgress();
         
         // Send file to the server
-        const response = await fetch(`${NGROK_URL}/upload`, { 
+        const response = await fetch(`${BACKEND_URL}/upload`, {
             method: "POST",
-            body: formData
+            body: formData,
+            // Don't set Content-Type header when using FormData
+            // The browser will set it automatically with the correct boundary
         });
-
+        
         // Handle server response
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`);
@@ -206,8 +208,8 @@ function showSuccessUI(result) {
     // Set file info
     fileInfo.textContent = `${selectedFile.name} (${formatFileSize(selectedFile.size)})`;
     
-    // Set download link
-    const downloadUrl = `${NGROK_URL}/download/${result.filename}`;
+    // Set download link - fixed to use BACKEND_URL instead of NGROK_URL
+    const downloadUrl = `${BACKEND_URL}/download/${result.filename}`;
     shareLink.value = downloadUrl;
     downloadLink.href = downloadUrl;
 }

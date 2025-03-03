@@ -1,69 +1,68 @@
-const cors = require("cors");
-const express = require("express");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+// Simple Node.js server with CORS support
+const express = require('express');
+const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
-// ✅ Ensure the uploads directory exists
-const UPLOADS_DIR = path.join(__dirname, "uploads");
-if (!fs.existsSync(UPLOADS_DIR)) {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-}
-
-// ✅ Fix CORS issue  
-app.use(cors({
-    origin: "*",  // Allows requests from any origin
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type"
-}));
-
-// Serve static files (if needed)
-app.use(express.static("public"));
-
-// ✅ Configure storage settings for uploaded files
+// Configure storage
 const storage = multer.diskStorage({
-    destination: UPLOADS_DIR,
-    filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}-${file.originalname}`;
-        cb(null, uniqueName);
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, 'uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
     }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
 });
 
 const upload = multer({ storage });
 
-// ✅ File upload route
-app.post("/upload", upload.single("file"), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded." });
-    }
+// Enable CORS for all routes
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Accept']
+}));
 
-    res.json({
-        message: "File uploaded successfully!",
-        filename: req.file.filename,
-        downloadURL: `http://localhost:${PORT}/download/${req.file.filename}`
-    });
+// Serve static files
+app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
+
+// File upload endpoint
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  
+  // Return file information
+  res.json({
+    filename: req.file.filename,
+    originalname: req.file.originalname,
+    size: req.file.size,
+    path: `/uploads/${req.file.filename}`
+  });
 });
 
-// ✅ File download route
-app.get("/download/:fileId", (req, res) => {
-    const filePath = path.join(UPLOADS_DIR, req.params.fileId);
-
-    if (!fs.existsSync(filePath)) {
-        return res.status(404).json({ error: "File not found." });
-    }
-
-    res.download(filePath, (err) => {
-        if (err) {
-            console.error("Error sending file:", err);
-            res.status(500).json({ error: "Error downloading file." });
-        }
-    });
+// Download endpoint
+app.get('/download/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'uploads', filename);
+  
+  if (fs.existsSync(filePath)) {
+    res.download(filePath);
+  } else {
+    res.status(404).json({ error: 'File not found' });
+  }
 });
 
-// ✅ Start the server
 app.listen(PORT, () => {
-    console.log(`🚀 Server started on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

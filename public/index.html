@@ -3,85 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Share</title>
-    <link rel="stylesheet" href="localsendstyles.css">
-    <link rel="icon" type="image/svg+xml" href="/vite.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>File Sharing App</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <polyline points="16 6 12 2 8 6"></polyline>
-                    <line x1="12" y1="2" x2="12" y2="15"></line>
-                </svg>
-                <h1>Chetak Share</h1>
-            </div>
+            <h1>File Share</h1>
+            <p>Simple, secure file sharing</p>
         </header>
-
+        
         <main>
-            <div class="card">
-                <div class="card-content">
-                    <h2>Share files instantly</h2>
-                    <p class="subtitle">Select a file to share with anyone, anywhere</p>
-                    
-                    <div class="upload-area" id="drop-area">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload-cloud">
-                            <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
-                            <path d="M12 12v9"></path>
-                            <path d="m16 16-4-4-4 4"></path>
-                        </svg>
-                        <p>Drag & drop files here or <label for="file-input" class="browse-link">browse</label></p>
-                        <input type="file" id="file-input" hidden>
-                    </div>
-
-                    <div class="progress-container" id="progress-container" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress" id="progress-bar"></div>
-                        </div>
-                        <p id="progress-text">Uploading...</p>
-                    </div>
-
-                    <button id="upload-button" class="primary-button" disabled>Share File</button>
+            <div class="upload-container">
+                <div id="drop-area">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload-cloud">
+                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+                        <path d="M12 12v9"></path>
+                        <path d="m16 16-4-4-4 4"></path>
+                    </svg>
+                    <p>Drag & drop files here or <label for="file-input" class="browse-link">browse</label></p>
                 </div>
-            </div>
-
-            <div class="card result-card" id="result-card" style="display: none;">
-                <div class="card-content">
+                
+                <input type="file" id="file-input" hidden>
+                
+                <div id="progress-container" style="display: none;">
+                    <div class="progress">
+                        <div id="progress-bar"></div>
+                    </div>
+                    <p id="progress-text">Uploading...</p>
+                </div>
+                
+                <button id="upload-button" disabled>Upload File</button>
+                
+                <div id="result-card" style="display: none;">
                     <div class="success-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                         </svg>
                     </div>
-                    <h2>File shared successfully!</h2>
-                    <p class="file-info" id="file-info"></p>
-                    <div class="share-link-container">
-                        <input type="text" id="share-link" readonly>
-                        <button id="copy-link" class="icon-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                        </button>
+                    <h2>File Uploaded Successfully!</h2>
+                    <p id="file-info"></p>
+                    
+                    <div class="share-section">
+                        <h3>Share your file</h3>
+                        <div class="link-container">
+                            <input type="text" id="share-link" readonly>
+                            <button id="copy-link">Copy</button>
+                        </div>
+                        <a id="download-link" class="download-button" download>Download File</a>
                     </div>
-                    <div class="action-buttons">
-                        <a id="download-link" class="secondary-button" target="_blank">Download</a>
-                        <button id="share-new" class="primary-button">Share Another File</button>
-                    </div>
+                    
+                    <button id="share-new" class="secondary-button">Share Another File</button>
                 </div>
             </div>
         </main>
-
-        <div id="toast" class="toast">Link copied to clipboard!</div>
-
+        
         <footer>
-            <p>© 2025 chetak Share. All rights reserved.</p>
+            <p>&copy; 2025 File Share. All rights reserved.</p>
         </footer>
     </div>
-
+    
+    <div id="toast">Link copied to clipboard!</div>
+    
     <script src="localsendscript.js"></script>
 </body>
 </html>

@@ -1,12 +1,3 @@
-Recovery/
-System Volume Information/
-$RECYCLE.BIN/
-Download/
-KL/
-KURA BHARGAVA/
-New folder/
-WEBSITES/
-temp close/
-website trials online download/
-*.zip
-*.pdf
+node_modules/
+uploads/
+.env
