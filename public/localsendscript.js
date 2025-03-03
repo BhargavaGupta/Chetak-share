@@ -1,5 +1,5 @@
-// Backend URL - change this to your deployed server URL
-const BACKEND_URL = "http://localhost:3000"; // Use localhost for development
+// Backend URL - use the current origin
+const BACKEND_URL = window.location.origin;
 
 // DOM Elements
 let fileInput;
@@ -45,7 +45,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Drag and drop functionality
     setupDragAndDrop();
+    
+    // Check server health
+    checkServerHealth();
 });
+
+// Check if the server is running
+async function checkServerHealth() {
+    try {
+        const response = await fetch(`${BACKEND_URL}/health`);
+        if (response.ok) {
+            console.log("✅ Server is running");
+        } else {
+            console.error("❌ Server health check failed");
+        }
+    } catch (error) {
+        console.error("❌ Server connection error:", error);
+    }
+}
 
 // Handle file selection
 function handleFileSelect(event) {
@@ -208,7 +225,7 @@ function showSuccessUI(result) {
     // Set file info
     fileInfo.textContent = `${selectedFile.name} (${formatFileSize(selectedFile.size)})`;
     
-    // Set download link - fixed to use BACKEND_URL instead of NGROK_URL
+    // Set download link - use BACKEND_URL
     const downloadUrl = `${BACKEND_URL}/download/${result.filename}`;
     shareLink.value = downloadUrl;
     downloadLink.href = downloadUrl;
